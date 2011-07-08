@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <string.h>
-#include <string.h>
 #include <ctype.h>
 #include "midcutils.h"
 
@@ -29,13 +28,6 @@ char *mid_strdup(const char *str) {
 }
 
 
-/**
- * Reverse a string in place, leaving the null character
- * in place.
- * @param str to change in place - Note *cannot* be a string
- *            literal, since it will modified in place
- * @return Pointer to string passed in, now reversed
- */
 char *mid_strrev(char *str) {
   int i, len = strlen(str);
   char buf, *p = str + (len - 1);
@@ -76,8 +68,11 @@ bool mid_ends_with(const char *str, const char *suffix) {
   return true;
 }
 
-bool mid_starts_with(const char *str, const char *suffix) {
-  /* ~TODO: fill in */
-  if (str == suffix) return true;  // bogus to avoid compiler warnings for now
+bool mid_starts_with(const char *str, const char *prefix) {
+  if (strlen(prefix) > strlen(str)) return false;
+  
+  for (; *prefix; prefix++, str++) {
+    if (*str != *prefix) return false;
+  }
   return true;
 }

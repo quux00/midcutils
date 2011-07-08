@@ -6,10 +6,7 @@
 
 #define TEST_FILE "test.out"
 
-int foo = 7;
-int bar = 8;
-
-void final_teardown();
+static void final_teardown();
 
 /* unit test for midcutils.c */
 
@@ -71,32 +68,119 @@ static char * test_mid_calloc() {
 }
 
 static char * test_mid_strdup() {
-  md_assert(bar == bar);
-  md_assertm("foo should not equal bar", foo != bar);
+
+  // check static string
+  char *tmpl1 = "lefse is Scandinavian";
+  char *p = strdup(tmpl1);
+  md_assert(p != NULL);
+  md_assert(strlen(p) == strlen(tmpl1));
+  md_assert(strcmp(tmpl1, p) == 0);
+  free(p);
+
+  // check string on the heap
+  char *tmpl2 = mid_malloc(4000);
+  strcpy(tmpl2, tmpl1);
+  strcat(tmpl2, ". Pizza is American. Tacos are Mexican. Beer is universal.");
+  p = mid_strdup(tmpl2);
+  md_assert(p != NULL);
+  md_assert(strlen(p) == strlen(tmpl2));
+  md_assert(strcmp(tmpl2, p) == 0);
+  free(p);
+  free(tmpl2);
+
+  //check empty string
+  p = mid_strdup("");
+  md_assert(p != NULL);
+  md_assert(strlen(p) == 0);
+  md_assert(strcmp("", p) == 0);
+  free(p);
+
   return 0;
 }
 
 static char * test_mid_strrev() {
-  md_assert(bar == bar);
-  md_assertm("foo should not equal bar", foo != bar);
+  // check non-palindrome
+  char *p = mid_strdup("level123");
+  char *q = mid_strrev(p);
+  md_assert(p == q); // should be the same pointer ref
+  md_assert(strcmp(p, q) == 0);
+  md_assert(strlen(p) == 8);
+  md_assert(strcmp(p, "321level") == 0);
+  free(p);
+
+  // check palindrome
+  p = mid_strdup("able was I ere I saw elba");
+  q = mid_strrev(p);
+  md_assert(p == q); // should be the same pointer ref
+  md_assert(strcmp(p, q) == 0);
+  md_assert(strcmp(p, "able was I ere I saw elba") == 0);
+  free(p);
+
+  // check one-char string
+  p = mid_strdup("a");
+  q = mid_strrev(p);
+  md_assert(p == q); // should be the same pointer ref
+  md_assert(strlen(p) == 1);
+  md_assert(strcmp(p, q) == 0);
+  md_assert(strcmp(p, "a") == 0);
+  free(p);
+
+  // check empty string
+  char a[1];
+  a[0] = '\0';
+  q = mid_strrev(a);
+  md_assert(a == q); // should be the same pointer ref
+  md_assert(strlen(a) == 0);
+  md_assert(strcmp(a, q) == 0);
+  md_assert(strcmp(a, "") == 0);
+  
   return 0;
 }
 
 static char * test_mid_stricmp() {
-  md_assert(bar == bar);
-  md_assertm("foo should not equal bar", foo != bar);
+  char *p = "HI MOM";
+  char *q = "HI mom";
+  md_assert( mid_stricmp(p,q) == 0 );
+  md_assert( mid_stricmp(p,"hi momm") < 0 );
+  md_assert( mid_stricmp("HI MOMM", p) > 0 );
+  md_assert( mid_stricmp("", p) < 0 );
+  md_assert( mid_stricmp("", "") == 0 );
   return 0;
 }
 
 static char * test_mid_ends_with() {
-  md_assert(bar == bar);
-  md_assertm("foo should not equal bar", foo != bar);
+  char *p = "You don't understand something until you think it's obvious.";
+  char *q = "1234 You don't understand something until you think it's obvious.";
+  char *s = "1ou don't understand something until you think it's obvious.";
+
+  md_assert( !mid_ends_with(p, "OBVIOUS.") );
+  md_assert( !mid_ends_with(p, "obvious") );
+  md_assert(  mid_ends_with(p, "obvious.") );
+  md_assert(  mid_ends_with(p, "s.") );
+  md_assert(  mid_ends_with(p, ".") );
+  md_assert(  mid_ends_with(p, "") );
+  md_assert(  mid_ends_with(p, p) );
+  md_assert( !mid_ends_with(p, q) );
+  md_assert( !mid_ends_with(p, s) );
+
   return 0;
 }
 
 static char * test_mid_starts_with() {
-  md_assert(bar == bar);
-  md_assertm("foo should not equal bar", foo != bar);
+  char *p = "You don't understand something until you think it's obvious.";
+  char *q = "1234 You don't understand something until you think it's obvious.";
+  char *s = "1ou don't understand something until you think it's obvious.";
+
+  md_assert( !mid_starts_with(p, "YOU") );
+  md_assert( !mid_starts_with(p, "You people") );
+  md_assert(  mid_starts_with(p, "You do") );
+  md_assert(  mid_starts_with(p, "Yo") );
+  md_assert(  mid_starts_with(p, "Y") );
+  md_assert(  mid_starts_with(p, "") );
+  md_assert(  mid_starts_with(p, p) );
+  md_assert( !mid_starts_with(p, q) );
+  md_assert( !mid_starts_with(p, s) );
+
   return 0;
 }
 
@@ -116,6 +200,6 @@ int main() {
 }
 
 
-void final_teardown() {
+static void final_teardown() {
   remove(TEST_FILE);
 }

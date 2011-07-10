@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
+#include <limits.h>
 #include "midcutils.h"
 
 void *mid_malloc(size_t size) {
@@ -75,4 +76,49 @@ bool mid_starts_with(const char *str, const char *prefix) {
     if (*str != *prefix) return false;
   }
   return true;
+}
+
+
+/**
+ * strlower and strupper do the same thing except for which 
+ * case-change method to call, so abstract the functionality
+ * into one function and have each externally visible function
+ * call into this one, passing a reference to the case 
+ * changing function to use.
+ */
+static char *_mid_strsamecase(const char *str, int (*f)(int));
+
+static char *_mid_strsamecase(const char *str, int (*f)(int)) {
+  int len = strlen(str);
+  char *strsame = malloc(len + 1);
+  if (strsame == NULL) return NULL;
+  strsame[len] = '\0';  /* make sure string is null-char terminated */
+
+  char *p;
+  for (p = strsame; *str; p++, str++) {
+    if (isalpha((int)*str)) *p = (char)f((int)*str);
+    else                    *p = *str;
+  }
+  return strsame;
+}
+
+char *mid_strlower(const char *str) {
+ return _mid_strsamecase(str, tolower);
+}
+
+char *mid_strupper(const char *str) {
+ return _mid_strsamecase(str, toupper);
+}
+
+char *mid_itoa(int n) {
+  return mid_ltoa((long int)n);
+}
+
+char *mid_ltoa(long int n) {
+  int sz = 11;
+  if (LONG_MAX < 2147483647) sz = 20; // handle 64-bit implementations
+  char *s = malloc(sz);
+  if (s == NULL) return NULL;
+  sprintf(s, "%ld", n);
+  return s;
 }

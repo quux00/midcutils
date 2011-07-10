@@ -24,12 +24,15 @@ CPPFLAGS += $(foreach includedir,$(program_INCLUDE_DIRS),-I$(includedir))
 LDFLAGS += $(foreach librarydir,$(program_LIBRARY_DIRS),-L$(librarydir))
 LDFLAGS += $(foreach library,$(program_LIBRARIES),-l$(library))
 
-.PHONY: all test clean distclean
+.PHONY: all test tset clean distclean
 
 #all: $(ut1_NAME) $(ut2_NAME) $(ut3_NAME) $(ut4_NAME)
 all: $(ut1_NAME)
 
 $(ut1_NAME): $(ut1_OBJS)
+
+# bcs I mistype it all the time!
+tset: test
 
 test: $(ut1_NAME)
 	@echo "------------------------"
@@ -50,7 +53,7 @@ help:
 clean:
 	@- $(RM) *.o
 
-distclean:
+distclean: clean
 	@- file * | grep ELF | cut "-d:" -f1 | xargs $(RM) 2>/dev/null; ls >/dev/null;
 
 

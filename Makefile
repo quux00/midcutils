@@ -41,5 +41,5 @@ help:
 clean:
 	@- $(RM) *.o
 
-distclean:
+distclean: clean
 	@- file * | grep ELF | cut "-d:" -f1 | xargs $(RM) 2>/dev/null; ls >/dev/null;

@@ -1,6 +1,8 @@
 #ifndef MIDUTILS_H
 #define MIDUTILS_H
 
+/* --- MACRO FUNCTIONS --- */
+
 /* "put" arguments to supplement puts */
 /* includes "debug" versions that start with 'd' */
 #define PUTI(x)  printf("%d\n", x)
@@ -19,10 +21,35 @@
 
 #define Str(x) #x
 
+/* --- FUNCTIONS --- */
+
 #include <stdlib.h>
 #include <stdbool.h>
 
+
+/**
+ * A very thin wrapper around malloc that check the return
+ * value and if it is NULL prints an error message to stderr.
+ * Then it returns the return value from malloc to its calling
+ * function, so you still have to check the return value before
+ * proceeding, but you can skip printing the error message.
+ * 
+ * @param size amount of memory to allocate
+ * @return pointer to memory on heap or NULL if malloc failed
+ */
 void *mid_malloc(size_t size);
+
+/**
+ * A very thin wrapper around calloc that check the return
+ * value and if it is NULL prints an error message to stderr.
+ * Then it returns the return value from calloc to its calling
+ * function, so you still have to check the return value before
+ * proceeding, but you can skip printing the error message.
+ * 
+ * @param nmemb number of entries of size 'size' to create
+ * @param size of the primitive (e.g., int, char *) to create memory for
+ * @return pointer to memory on heap or NULL if calloc failed
+ */
 void *mid_calloc(size_t nmemb, size_t size);
 
 /**
@@ -97,10 +124,38 @@ char *mid_strupper(const char *str);
  * @param n integer to create the string representation from
  * @return new string on the heap with string value of n
  */
-char *itoa(int n);
+char *mid_itoa(int n);
+
+/**
+ * Creates a string representation of the integer passed in.
+ * The string returned was created via malloc(3) and can
+ * be freed with free(3).
+ * @param n integer to create the string representation from
+ * @return new string on the heap with string value of n
+ */
+char *mid_ltoa(long int n);
+
+
+/* --- HELPER METHODS FROM APUE --- */
+/* APUE: Advanced Programming in the Unix Environment, v. 2 
+ * link: http://www.apuebook.com/
+ */
+
+/* ~TODO: Not implemented yet */
+void err_dump(const char *, ...);		/* {App misc_source} */
+void err_msg(const char *, ...);
+void err_quit(const char *, ...);
+void err_exit(int, const char *, ...);
+void err_ret(const char *, ...);
+void err_sys(const char *, ...);
+
+void log_msg(const char *, ...);			/* {App misc_source} */
+void log_open(const char *, int, int);
+void log_quit(const char *, ...);
+void log_ret(const char *, ...);
+void log_sys(const char *, ...);
 
 //~TODO: None of this has been tested yet
 /* #define MALLOC(sz) (malloc(sz) || fputs("Unable to allocate heap memory in call to malloc.", stderr) && exit(EXIT_FAILURE)) */
-
 
 #endif

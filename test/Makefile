@@ -4,13 +4,13 @@ ut3_NAME := ut_midcqueue
 ut4_NAME := ut_midc_pcre_gsub
 
 ut1_C_SRCS := $(ut1_NAME).c
-ut2_C_SRCS := $(ut2_NAME).c $(ut1_C_SRCS)
-ut3_C_SRCS := $(ut3_NAME).c $(ut1_C_SRCS)
-ut4_C_SRCS := $(ut3_NAME).c $(ut1_C_SRCS)
+ut2_C_SRCS := $(ut2_NAME).c
+ut3_C_SRCS := $(ut3_NAME).c
+ut4_C_SRCS := $(ut4_NAME).c
 
 ut1_OBJS := ${ut1_C_SRCS:.c=.o} ../midcutils.o
-ut2_OBJS := ${ut2_C_SRCS:.c=.o}
-ut3_OBJS := ${ut3_C_SRCS:.c=.o}
+ut2_OBJS := ${ut2_C_SRCS:.c=.o} 
+ut3_OBJS := ${ut3_C_SRCS:.c=.o} ../midcqueue.o
 ut4_OBJS := ${ut4_C_SRCS:.c=.o}
 
 program_INCLUDE_DIRS := $(HOME)/c/midcunit ..
@@ -27,9 +27,11 @@ LDFLAGS += $(foreach library,$(program_LIBRARIES),-l$(library))
 .PHONY: all test tset clean distclean
 
 #all: $(ut1_NAME) $(ut2_NAME) $(ut3_NAME) $(ut4_NAME)
-all: $(ut1_NAME)
+all: $(ut1_NAME) $(ut3_NAME)
 
 $(ut1_NAME): $(ut1_OBJS)
+
+$(ut3_NAME): $(ut3_OBJS)
 
 # bcs I mistype it all the time!
 tset: test

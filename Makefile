@@ -5,7 +5,7 @@ pg4_NAME := midc_pcre_gsub
 
 pg1_C_SRCS := $(pg1_NAME).c
 pg2_C_SRCS := $(pg2_NAME).c $(pg1_C_SRCS)
-pg3_C_SRCS := $(pg3_NAME).c $(pg1_C_SRCS)
+pg3_C_SRCS := $(pg3_NAME).c
 pg4_C_SRCS := $(pg3_NAME).c $(pg1_C_SRCS)
 
 pg1_OBJS := ${pg1_C_SRCS:.c=.o}
@@ -27,7 +27,11 @@ LDFLAGS += $(foreach library,$(program_LIBRARIES),-l$(library))
 .PHONY: all test clean distclean
 
 # all: $(pg1_OBJS) $(pg2_OBJS) $(pg3_OBJS) $(pg4_OBJS)
-all: $(pg1_OBJS)
+all: $(pg1_OBJS) $(pg3_OBJS)
+
+$(pg3_NAME): $(pg3_OBJS)
+	@ ls > /dev/null  # need a 'no-op' here to prevent it from
+                    # building an executable -just want object file
 
 ################
 

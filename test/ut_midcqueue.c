@@ -16,7 +16,7 @@ static char * do_overflow(char *source, struct midc_queue *q, int sz);
 
 static char * test_well_behaved_create_own() {
   char *rt;
-  int sz = 999999;
+  int sz = 9991999;
   struct midc_queue q;
   midc_qcreate(&q, sz);
   rt = do_well_behaved_test("create-own", &q, sz);
@@ -76,21 +76,23 @@ static char * test_underflow() {
 }
 
 static char * test_overflow_create_own() {
+  char *rt;
   int sz = 4;
   struct midc_queue q;
   midc_qcreate(&q, sz);
-  do_overflow("create-own", &q, sz);
+  rt = do_overflow("create-own", &q, sz);
   midc_qdispose(&q);
-  return 0;
+  return rt;
 }
 
 static char * test_overflow_library_creates() {
+  char *rt;
   int sz = 4;
   struct midc_queue *q;
   q = midc_qcreate(NULL, sz);
-  do_overflow("library-create", q, sz);
+  rt = do_overflow("library-create", q, sz);
   midc_qdispose(q);
-  return 0;
+  return rt;
 }
 
 // all previous tests enqueued strings, now try a numeric type
@@ -268,7 +270,7 @@ static char * do_overflow(char *source, struct midc_queue *q, int sz) {
 
   // this will cause another resize
   for (i = 0; i < 20; i++) {
-    midc_qenqueue(q, "third string");
+    md_assertm( source, midc_qenqueue(q, "third string") > -1 );
   }
   md_assertm( source, midc_qsize(q) == 30 );
   md_assertm( source, strcmp(midc_qpeek(q), "second string") == 0 );
@@ -283,9 +285,9 @@ static char * do_overflow(char *source, struct midc_queue *q, int sz) {
   md_assertm( source, midc_qsize(q) == 24 );
   md_assertm( source, strcmp(midc_qpeek(q), "third string") == 0 );
 
- for (i = 0; i < 15; i++) {
-  midc_qenqueue(q, "fourth string");
- }
+  for (i = 0; i < 15; i++) {
+    md_assertm( source, midc_qenqueue(q, "fourth string") > -1 );
+  }
   md_assertm( source, midc_qsize(q) == 39 );
   md_assertm( source, strcmp(midc_qpeek(q), "third string") == 0 );
 
@@ -307,7 +309,7 @@ static char * do_well_behaved_test(char *source, struct midc_queue *q, int sz) {
   md_assertm( source, midc_qisempty(q) );
   md_assertm( source, midc_qsize(q) == 0 );
   md_assertm( source, midc_qpeek(q) == NULL );  
-  midc_qenqueue(q, s);
+  md_assertm( source, midc_qenqueue(q, s) > -1 );
   md_assertm( source, midc_qsize(q) == 1 );
   md_assertm( source, !midc_qisempty(q) );
   md_assertm( source, strcmp(midc_qpeek(q), s) == 0 );
@@ -316,11 +318,11 @@ static char * do_well_behaved_test(char *source, struct midc_queue *q, int sz) {
   md_assertm( source, midc_qisempty(q) );
   md_assertm( source, strcmp(s, rt) == 0 );
   
-  midc_qenqueue(q, s);
+  md_assertm( source, midc_qenqueue(q, s) > -1 );
   md_assertm( source, midc_qsize(q) == 1 );
-  midc_qenqueue(q, t);
+  md_assertm( source, midc_qenqueue(q, t) > -1 );
   md_assertm( source, midc_qsize(q) == 2 );
-  midc_qenqueue(q, u);
+  md_assertm( source, midc_qenqueue(q, u) > -1 );
   md_assertm( source, midc_qsize(q) == 3 );
   md_assertm( source, ! midc_qisempty(q) );
   md_assertm( source, strcmp(midc_qpeek(q), s) == 0 );
@@ -335,7 +337,7 @@ static char * do_well_behaved_test(char *source, struct midc_queue *q, int sz) {
 
   int i;
   for (i = 0; i < sz - 1; i++) {
-    midc_qenqueue(q, s);    
+    md_assertm( source, midc_qenqueue(q, s) > -1 );
   }
   md_assertm( source, !midc_qisempty(q) );
   md_assertm( source, midc_qsize(q) == sz );

@@ -4,7 +4,7 @@ pg3_NAME := midcqueue
 pg4_NAME := midc_pcre_gsub
 
 pg1_C_SRCS := $(pg1_NAME).c
-pg2_C_SRCS := $(pg2_NAME).c $(pg1_C_SRCS)
+pg2_C_SRCS := $(pg2_NAME).c
 pg3_C_SRCS := $(pg3_NAME).c
 pg4_C_SRCS := $(pg3_NAME).c $(pg1_C_SRCS)
 
@@ -29,9 +29,12 @@ LDFLAGS += $(foreach library,$(program_LIBRARIES),-l$(library))
 # all: $(pg1_OBJS) $(pg2_OBJS) $(pg3_OBJS) $(pg4_OBJS)
 all: $(pg1_OBJS) $(pg3_OBJS)
 
-$(pg3_NAME): $(pg3_OBJS)
+$(pg2_NAME): $(pg2_OBJS)
 	@ ls > /dev/null  # need a 'no-op' here to prevent it from
                     # building an executable -just want object file
+
+$(pg3_NAME): $(pg3_OBJS)
+	@ ls > /dev/null  # 'no-op' to prevent it from building an executable
 
 ################
 

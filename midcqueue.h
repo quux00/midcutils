@@ -6,12 +6,12 @@
 
 /**
  * A dynamically resizing queue, with the normal methods associated
- * with the queue ADT.  Both the struct and its inner array (holding the queue
+ * with the queue ADT.  Both the struct and its inner array (holding the queue)
  * are created on the heap by the create method.  Thus, when finished with
  * the queue, be sure to call midc_qdispose, passing the pointer to the queue
  * so that both its malloc'd elements can be freed.  (If you call free on the
  * struct only, only 1 of the 2 parts of heap memory will be freed and you will
- * have a memory leak.
+ * have a memory leak.)
  *
  * See the ut_midc_queue unit test for example usage.
  */
@@ -28,7 +28,7 @@ struct midc_queue {
 struct midc_queue *midc_qcreate(struct midc_queue *q, int sz);
 void  midc_qdispose(struct midc_queue *q);
 void *midc_qpeek(struct midc_queue *q);
-void  midc_qenqueue(struct midc_queue *q, void *str);
+int   midc_qenqueue(struct midc_queue *q, void *ent);
 void *midc_qdequeue(struct midc_queue *q);
 bool  midc_qisempty(struct midc_queue *q);
 int   midc_qsize(struct midc_queue *q);

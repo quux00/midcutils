@@ -9,7 +9,7 @@ ut3_C_SRCS := $(ut3_NAME).c
 ut4_C_SRCS := $(ut4_NAME).c
 
 ut1_OBJS := ${ut1_C_SRCS:.c=.o} ../midcutils.o
-ut2_OBJS := ${ut2_C_SRCS:.c=.o} 
+ut2_OBJS := ${ut2_C_SRCS:.c=.o} ../midcstack.o
 ut3_OBJS := ${ut3_C_SRCS:.c=.o} ../midcqueue.o
 ut4_OBJS := ${ut4_C_SRCS:.c=.o}
 
@@ -27,18 +27,24 @@ LDFLAGS += $(foreach library,$(program_LIBRARIES),-l$(library))
 .PHONY: all test tset clean distclean
 
 #all: $(ut1_NAME) $(ut2_NAME) $(ut3_NAME) $(ut4_NAME)
-all: $(ut1_NAME) $(ut3_NAME)
+all: $(ut1_NAME) $(ut2_NAME) $(ut3_NAME)
 
 $(ut1_NAME): $(ut1_OBJS)
+
+$(ut2_NAME): $(ut2_OBJS)
 
 $(ut3_NAME): $(ut3_OBJS)
 
 # bcs I mistype it all the time!
 tset: test
 
-test: $(ut1_NAME)
+test: $(ut1_NAME) $(ut2_NAME) $(ut3_NAME)
 	@echo "------------------------"
-	./$(ut1_NAME)
+	- ./$(ut1_NAME)
+	@echo "------------------------"
+	- ./$(ut2_NAME)
+	@echo "------------------------"
+	- ./$(ut3_NAME)
 
 ################
 

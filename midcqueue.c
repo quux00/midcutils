@@ -13,11 +13,12 @@ bool midc_qisempty(struct midc_queue *q) {
   return q->f == q->r;
 }
 
-void midc_qenqueue(struct midc_queue *q, void *ent) {
+int midc_qenqueue(struct midc_queue *q, void *ent) {
   // resize if queue is full
   if (q->maxsize - midc_qsize(q) == 1) {
     void **newq;
     newq = calloc(q->maxsize * 2, sizeof(void *));
+    if (newq == NULL) return -1;
     int newr = 0; // new 'r' pointer
     //now copy from one queue-array to the other
     for (; !midc_qisempty(q); newr++) {
@@ -38,6 +39,7 @@ void midc_qenqueue(struct midc_queue *q, void *ent) {
   // enqueue the new entity
   *(q->pqueue + q->r) = ent;
   QMODULO_ADD(r);
+  return 0;
 }
 
 
@@ -87,7 +89,7 @@ struct midc_queue *midc_qcreate(struct midc_queue *q, int sz) {
     q->onheap = false;
   }
   // sz+1 bcs one slot is always unused
-  q->pqueue = calloc( sz+1, sizeof(void *) ); /* ~TODO: is this valid/safe? */
+  q->pqueue = calloc( sz+1, sizeof(void *) );
   if (q->pqueue == NULL) {
     if (q->onheap) free(q);
     return NULL;

@@ -20,6 +20,7 @@
 #define dPUTS(x) printf(#x " = %s\n", x)
 
 #define Str(x) #x
+#define Xstr(x) Str(x)  /* need to test these that they work correctly */
 
 /* --- FUNCTIONS --- */
 

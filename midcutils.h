@@ -19,8 +19,16 @@
 
 #define dPUTS(x) printf(#x " = %s\n", x)
 
-#define Str(x) #x
-#define Xstr(x) Str(x)  /* need to test these that they work correctly */
+/* 
+ * Use Str() to print a value as a string
+ * Example:
+ *  #include <limits.h>
+ *  Str(INT_MAX)  #=> preprocessor will insert string value of INT_MAX
+ * See C-FAQ for more details:
+ *  http://c-faq.com/ansi/stringize.html
+ */
+#define XStr(x) #x      /* this one stringizes a value, rather than the MACRO name */
+#define Str(x) XStr(x)  /* this one expands x to its actual value */
 
 /* --- FUNCTIONS --- */
 

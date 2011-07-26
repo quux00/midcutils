@@ -1,9 +1,53 @@
+##########################################################################
+#  There are two makefiles for midcutils: Makefile and libtool.mk
+##########################################################################
+#  
+#  This one can compile each part of midcutils separately to .o files,
+#  and run tests (in the test dir) linked to the .o files.
+#  And it can make static library via the lib-static target (Unix only)
+#  
+##########################################################################
+#  
+#  The other one, libtool.mk, can create a shared library, run the
+#  tests against the shared library, install the shared library and headers
+#  and uninstall the shared library and headers.  It depends on libtool,
+#  which you may need to install first if you don't already have it.
+#  
+##########################################################################
+# 
+#  === Usage of this Makefile ===
+#  This makefile cannot install, only create .o and .a files and run
+#  the unit tests (against the .o files).
+#  
+#  make all        - builds all the .o files
+#  make test       - runs tests against the .o files
+#                    You must have midcunit installed to run the unit tests.
+#  make lib-static - creates libmidcutils.a in the current directory
+#                    you will need to install it yourself and run
+#                    ranlib on it
+#  make clean      - removes .o and .a files
+#  make distclean  - removes all binaries, including those created in
+#                    the test dir
+#  make help       - shows all the targets
+#
+##########################################################################
+#  
+#  === Note on running the unit tests === 
+#  The unit tests use the midcunit unit test framework, which is just
+#  one header file, midcunit.h. midcunit is available from: 
+#  https://github.com/midpeter444/midcunit
+#  
+#  This makefile expects the header to installed in /usr/local/lib,
+#  but you can change that by editing the program_INCLUDE_DIRS variable
+#  in the Makefile in the test directory.
+#
+##########################################################################
+
 ##### basic compilation section #####
 pg1_NAME := midcutils
 pg2_NAME := midcstack
 pg3_NAME := midcqueue
 pg4_NAME := midc_pcre_gsub
-
 
 pg1_C_SRCS := $(pg1_NAME).c
 pg2_C_SRCS := $(pg2_NAME).c
@@ -41,26 +85,22 @@ $(pg2_NAME): $(pg2_OBJS)
 $(pg3_NAME): $(pg3_OBJS)
 	@ ls > /dev/null  # 'no-op' to prevent it from building an executable
 
-##### create / install libraries #####
 
-# create a static midcutil library (Unix)
+###### create a static midcutil library (Unix) ######
 midcutils.a: all
 	$(AR) -crusv $@ $(pg1_OBJS) $(pg2_OBJS) $(pg3_OBJS)
 
 lib-static: midcutils.a
 
-midcutil.so: all
-	$(LINK.c) $< ${CXXFLAGS} -shared -fPIC -L. -lexample -Wl,-soname,$@ -o $@
-
-lib-shared: midcutil.so
-
-
-
 
 ##### test #####
+# make sure we can call $(MAKE)
+ifeq ($(MAKE),)
+    MAKE := make
+endif
 
 test: 
-  #~TODO: need to include or invoke the Makefile in the test dir ...
+	@ $(MAKE) -C test test
 
 ##### misc helper targets #####
 
@@ -73,3 +113,4 @@ clean:
 
 distclean: clean
 	@- file * | grep ELF | cut "-d:" -f1 | xargs $(RM) 2>/dev/null; ls >/dev/null;
+	@ $(MAKE) -C test distclean > /dev/null

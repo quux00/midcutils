@@ -1,0 +1,77 @@
+                     ************
+********************** midcutils **********************
+                     ************
+
+  -- Welcome to midcutils, a simple C utility library -- 
+
+
+--[ Overview ]-----------------------------------------------
+
+midcutils was developed in order to get me back into C programming
+and capture some of the basic core utilities that most C programmers
+build for themselves or get from other helper libraries.
+
+At present, there is nothing here that is novel or you can't get from
+somewhere else.  Overtime, I hope to continue adding to the utility
+library.
+
+
+
+--[ Functionality ]---------------------------------------------
+
+midcutils has three areas of functionality:
+
+* generic helper functions, such as atoi, strdup, strrev, stricmp
+  ** see midcutils.h for a full list and documentation
+
+* a generic resizable array-based stack that can take any data type,
+  since it is a stack of void *.  It implements the standard functions
+  of a stack ADT.
+  ** see midcstack.h for a full list and documentation
+
+* a generic resizable array-based queue that can take any data type,
+  since it is a queue of void *.  It implements the standard functions
+  of a queue ADT.
+  ** see midcstack.h for a full list and documentation
+
+
+--[ Dependencies ]---------------------------------------------
+
+midcutil is written in ANSI C 99.
+
+Besides ANSI C headers, the only dependency is on midcunit, my
+unit testing framework, for running the unit tests.
+
+midcunit can be obtained here: https://github.com/midpeter444/midcunit
+
+
+
+--[ Creation and Installation ]----------------------------------------
+
+Both static and shared libraries for midcutils can be created. The
+creation and installation of the shared libraries depends on libtool.
+
+See the documentation in the Makefile and libtool.mk makefiles.
+
+To build, test and install shared and static libraries using libtool, do
+make -f libtool.mk 
+make -f libtool.mk test
+make -f libtool.mk install
+
+
+--[ Tests ]----------------------------------------
+
+There are full unit tests for all midutils functions in the test dir.
+
+To run the tests you must have midcunit installed:
+https://github.com/midpeter444/midcunit
+
+You can run the test from any Makefile, including the one in the 
+test directory.
+
+
+
+
+-Michael Peterson
+
+
